@@ -1,4 +1,5 @@
 import streamlit as st
+import snowflake
 
 st.title("🎈 My new app")
 st.write(
@@ -30,3 +31,20 @@ if genre == 'Comedy':
 else:
     st.write("You didn't select comedy.")
 
+
+# Initialize connection.
+conn = st.connection("snowflake")
+
+# Perform query.
+df2 = conn.query("select * from freecompanydataset limit 10;", ttl=600)
+
+
+# @st.cache_data
+# def load_table():
+#     session = conn.session()
+#     return session.table("mytable").to_pandas()
+
+# df2 = load_table()
+
+for row in df2.itertuples():
+    st.write(f"{row.NAME} is in {row.COUNTRY} and has size of {row.SIZE}")
