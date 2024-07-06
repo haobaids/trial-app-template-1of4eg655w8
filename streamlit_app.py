@@ -169,7 +169,7 @@ selected_grow_industry = st.selectbox(
     "Choose the growth industry of interest",
     list_industry_growing_past_n_year)
 
-st.write("#### Break down by company size")
+st.write(f"#### Break down by company size for {selected_grow_industry}")
 col1_by_size, col2_by_size = st.columns(2)
 df_size = conn.query("select * from REPORT_COMPANY_CNT_PER_FOUNDED_INDUSTRY_SIZE where founded >= 2004;", ttl=600)
 df_size.columns = df_size.columns.str.lower()
@@ -212,7 +212,7 @@ chart_compare_to_all = alt.Chart(df_size_agg_transposed).mark_bar(
 col2_by_size.altair_chart(chart_compare_to_all)
 
 
-st.write("#### Break down by country")
+st.write(f"#### Break down by country for {selected_grow_industry}")
 df_country = conn.query("select * from REPORT_COMPANY_CNT_PER_FOUNDED_INDUSTRY_COUNTRY where founded >= 2004;", ttl=600)
 df_country.columns = df_country.columns.str.lower()
 df_country = df_country[df_country.industry == selected_grow_industry].copy()
