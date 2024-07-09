@@ -12,7 +12,7 @@ st.write(
     "Data source: [freecompanydataset](https://app.snowflake.com/marketplace/listing/GZSTZRRVYL2/people-data-labs-free-company-dataset?available=available/)"
 )
 st.write(
-    "Caveat: All the companies in the data have a unique LinkedIn url. The data may not cover all the industries in all countries."
+    "Caveat: All the companies in the data have a unique LinkedIn url. Companies with no LinkedIn url are not included in the data."
 )
 
 st.write(
@@ -34,8 +34,8 @@ st.write(
     "- Any other stakeholders who are interested in understanding market dynamics and making informed decision."
 )
 st.divider()
-st.write("## Key metrics and scope")
-st.write("Growth speed ratio in the past N (N<20) years: Ratio of the number of founded companies in the past N years to that in the past 20 years. The higher the ratio, the more growth the industry had in the past N years.")
+st.write("## Key metric and scope")
+st.write("Growth speed ratio in the past N (N<20) years: Ratio of the number of founded companies in the past N years to that in the past 20 years. The higher the ratio, the faster the industry grew in the past N years.")
 # st.write("2023 growth increment: Number of founded companies in 2023 - Number of founded companies in 2022")
 st.write('Scope: past 20 years (2004 - 2023)')
 
