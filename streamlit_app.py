@@ -16,9 +16,10 @@ st.write(
 )
 
 st.divider()
-st.write("## Key metric and scope")
-st.write("Growth speed ratio in the past N (N<20) years: Ratio of the number of founded companies in the past N years to that in the past 20 years. The higher the ratio, the faster the industry grew in the past N years.")
-# st.write("2023 growth increment: Number of founded companies in 2023 - Number of founded companies in 2022")
+st.write("## Key metrics and scope")
+st.write("Industry Growth: Number of founded companies in a year.")
+st.write("Growth speed in the past N (N<20) years: Ratio of the number of founded companies in the past N years to that in the past 20 years. The higher the ratio, the faster the industry grew in the past N years.")
+st.write("Industries having the ratio > N/20 are identified as fast growing industries.")
 st.write('Scope: past 20 years (2004 - 2023)')
 
 # Initialize connection.
@@ -92,15 +93,15 @@ if flag_breakdown_industry:
     line_chart_1.width=220
     col2.altair_chart(line_chart_1, use_container_width=True)
     
-    line_chart_1b = alt.Chart(df2).mark_line().encode(
-        alt.X('founded', title='founded year'),
-        alt.Y('cnt_employee', title='count of employees'),
-        color=alt.Color('industry', legend=None),
-        tooltip=['founded', 'cnt_employee', 'industry']
-    ).interactive()
-    line_chart_1b.height=180
-    line_chart_1b.width=220
-    col2.altair_chart(line_chart_1b, use_container_width=True)
+    # line_chart_1b = alt.Chart(df2).mark_line().encode(
+    #     alt.X('founded', title='founded year'),
+    #     alt.Y('cnt_employee', title='count of employees'),
+    #     color=alt.Color('industry', legend=None),
+    #     tooltip=['founded', 'cnt_employee', 'industry']
+    # ).interactive()
+    # line_chart_1b.height=180
+    # line_chart_1b.width=220
+    # col2.altair_chart(line_chart_1b, use_container_width=True)
 
     line_chart_1c = alt.Chart(df2).mark_line().encode(
         alt.X('founded', title='founded year'),
@@ -125,30 +126,48 @@ else:
     line_chart_2 = alt.Chart(df_per_year).mark_line().encode(
         alt.X('founded', title='founded year'),
         alt.Y('cnt_company', title='count of companies'),
-        tooltip=['founded', 'cnt_company']
+        tooltip=['founded', 'cnt_company'],
+        color=alt.value("#FFAA00")
     ).interactive()
     line_chart_2.height=200
     line_chart_2.width=220
     col2.altair_chart(line_chart_2, use_container_width=True)
 
-    line_chart_2b = alt.Chart(df_per_year).mark_line().encode(
-        alt.X('founded', title='founded year'),
-        alt.Y('cnt_employee', title='count of employees'),
-        tooltip=['founded', 'cnt_employee']
-    ).interactive()
-    line_chart_2b.height=180
-    line_chart_2b.width=220
-    col2.altair_chart(line_chart_2b, use_container_width=True)
+    # line_chart_2b = alt.Chart(df_per_year).mark_line().encode(
+    #     alt.X('founded', title='founded year'),
+    #     alt.Y('cnt_employee', title='count of employees'),
+    #     tooltip=['founded', 'cnt_employee'],
+    #     color=alt.value("#FFAA00")
+    # ).interactive()
+    # line_chart_2b.height=180
+    # line_chart_2b.width=220
+    # col2.altair_chart(line_chart_2b, use_container_width=True)
 
     line_chart_2c = alt.Chart(df_per_year).mark_line().encode(
         alt.X('founded', title='founded year'),
         alt.Y('cnt_region', title='count of regions'),
-        tooltip=['founded', 'cnt_region']
+        tooltip=['founded', 'cnt_region'],
+        color=alt.value("#FFAA00")
     ).interactive()
     line_chart_2c.height=180
     line_chart_2c.width=220
     col2.altair_chart(line_chart_2c, use_container_width=True)
 
+
+# df_break_down_region = conn.query("select founded, region, count(id) as cnt_company from int_freecompanydataset where region!='unknown' and founded >=2004 group by 1,2;", ttl=600)
+# df_break_down_region.columns = df_break_down_region.columns.str.lower()
+
+# line_chart_break_down_region = alt.Chart(df_break_down_region).mark_line().encode(
+#         alt.X('founded', title='founded year'),
+#         alt.Y('cnt_company', title='count of companies'),
+#         color=alt.Color('region', legend=None),
+#         tooltip=['founded', 'cnt_company', 'region']
+#     ).interactive()
+# line_chart_break_down_region.height=180
+# line_chart_break_down_region.width=220
+# col2.altair_chart(line_chart_break_down_region, use_container_width=True)
+
+    
 # linechart of cnt of company in past 20 years and their delta in past 1 year
 st.write("## Fast growing industries: High growth ratio in the past N years")
 st.write("An industry is a Fast Growing Industry in the past N years (N<20) when it has a ratio (vs. N/20) of count of founded companies in the past N years to that of the past 20 years > N/20.")
@@ -184,11 +203,11 @@ elif selected_year_grow == "3":
 elif selected_year_grow == "1":
     var_size = 'pct_company_past_1_year'
 # df_delta_tmp = df_delta_tmp.merge(df_ratio_past_20_year, on='industry', how='left')
-st.write(f"There are {len(list_industry_growing_past_n_year)} industries.")
+st.write(f"There are {len(list_industry_growing_past_n_year)} industries grew fast in the past {selected_year_grow} year(s) (ratio > {selected_year_grow}/20).")
 
 col1_growing, col2_growing = st.columns(2)
-col1_growing_tile = col1_growing.container(height=850, border=False)
-col2_growing_tile = col2_growing.container(height=850, border=False)
+col1_growing_tile = col1_growing.container(height=600, border=False)
+col2_growing_tile = col2_growing.container(height=600, border=False)
 # col2_growing_tile.line_chart(data=df_delta_tmp, x="founded", y="cnt_company", color="industry", y_label="count of companies")
 line_chart_3 = alt.Chart(df_delta_tmp).mark_line().encode(
         alt.X('founded', title='founded year'),
@@ -200,15 +219,15 @@ line_chart_3.height=160
 line_chart_3.width=220
 col2_growing_tile.altair_chart(line_chart_3, use_container_width=True)
 
-line_chart_3b = alt.Chart(df_delta_tmp).mark_line().encode(
-        alt.X('founded', title='founded year'),
-        alt.Y('cnt_employee', title='count of employees'),
-        color=alt.Color('industry', legend=None),
-        tooltip=['founded', 'cnt_employee', 'industry']
-    ).interactive()
-line_chart_3b.height=160
-line_chart_3b.width=220
-col2_growing_tile.altair_chart(line_chart_3b, use_container_width=True)
+# line_chart_3b = alt.Chart(df_delta_tmp).mark_line().encode(
+#         alt.X('founded', title='founded year'),
+#         alt.Y('cnt_employee', title='count of employees'),
+#         color=alt.Color('industry', legend=None),
+#         tooltip=['founded', 'cnt_employee', 'industry']
+#     ).interactive()
+# line_chart_3b.height=160
+# line_chart_3b.width=220
+# col2_growing_tile.altair_chart(line_chart_3b, use_container_width=True)
 
 line_chart_3c = alt.Chart(df_delta_tmp).mark_line().encode(
         alt.X('founded', title='founded year'),
@@ -245,8 +264,8 @@ chart_ratio = (
 col1_growing_tile.altair_chart(chart_ratio, use_container_width=True)
 
 df_delta_tmp_1 = df_delta_tmp[df_delta_tmp.founded == 2023]
-col2_growing_tile.write(f"Among the {len(list_industry_growing_past_n_year)} industires, {df_delta_tmp_1[df_delta_tmp_1.delta_cnt_company>0].shape[0]} industries are growing faster from 2022 to 2023.")
-col2_growing_tile.write(f"Industry growing faster from 2022 to 2023: {df_delta_tmp_1[df_delta_tmp_1.delta_cnt_company>0]['industry'].unique()}")
+col2_growing_tile.write(f"Among the {len(list_industry_growing_past_n_year)} industires, {df_delta_tmp_1[df_delta_tmp_1.delta_cnt_company>0].shape[0]} industry(ies) grew faster from 2022 to 2023.")
+col2_growing_tile.write(f"Industry(ies) grew faster from 2022 to 2023: {df_delta_tmp_1[df_delta_tmp_1.delta_cnt_company>0]['industry'].unique()}")
 # st.bar_chart(data=df_delta_tmp_1, x="industry", y="delta_cnt_company", y_label="delta in founded companies from previous year")
 
 
@@ -293,36 +312,47 @@ chart_compare_to_all.height=100
 # chart_compare_to_all.width=200
 st.altair_chart(chart_compare_to_all)
 
+if selected_year_grow == "10":
+    df_size_past = df_size[df_size.founded >= 2023-10+1].copy()
+elif selected_year_grow == "5":
+    df_size_past = df_size[df_size.founded >= 2023-5+1].copy()
+elif selected_year_grow == "3":
+    df_size_past = df_size[df_size.founded >= 2023-3+1].copy()
+elif selected_year_grow == "1":
+    df_size_past = df_size[df_size.founded >= 2023-1+1].copy()
+
+df_size_past_agg = df_size_past.groupby('size')['cnt_company'].sum().reset_index()
+df_size_past_agg['pct_company'] = df_size_past_agg['cnt_company']*100.0/df_size_past_agg['cnt_company'].sum()
 
 # col1_by_size.line_chart(data=df_size, x="founded", y="cnt_company", color="size", y_label="count of companies")
-line_chart_by_size = alt.Chart(df_size).mark_line(interpolate='basis').encode(
-    alt.X('founded', title='founded'),
-    alt.Y('cnt_company', title='count of companies'),
-    color='size:N'
+line_chart_by_size = alt.Chart(df_size_past_agg).mark_bar(interpolate='basis').encode(
+    alt.X('size', title='size'),
+    alt.Y('pct_company', title='percent of companies'),
+    # color='size:N'
 ).properties(
-    title='Time trend'
+    title=f"Growth in the past {selected_year_grow} year(s)"
 )
 line_chart_by_size.height=300
-# line_chart_by_size.width=200
+line_chart_by_size.width=500
 st.altair_chart(line_chart_by_size)
 
-line_chart_by_size2 = alt.Chart(df_size).mark_line(interpolate='basis').encode(
-    alt.X('founded', title='founded'),
-    alt.Y('cnt_employee', title='count of employees'),
-    color='size:N'
-)
-line_chart_by_size2.height=300
-# line_chart_by_size2.width=200
-st.altair_chart(line_chart_by_size2)
+# line_chart_by_size2 = alt.Chart(df_size_past_agg).mark_bar(interpolate='basis').encode(
+#     alt.X('size', title='size'),
+#     alt.Y('cnt_employee', title='count of employees'),
+#     # color='size:N'
+# )
+# line_chart_by_size2.height=300
+# # line_chart_by_size2.width=200
+# st.altair_chart(line_chart_by_size2)
 
-line_chart_by_size3 = alt.Chart(df_size).mark_line(interpolate='basis').encode(
-    alt.X('founded', title='founded'),
-    alt.Y('cnt_region', title='count of regions'),
-    color='size:N'
-)
-line_chart_by_size3.height=300
-# line_chart_by_size3.width=200
-st.altair_chart(line_chart_by_size3)
+# line_chart_by_size3 = alt.Chart(df_size_past_agg).mark_line(interpolate='basis').encode(
+#     alt.X('size', title='size'),
+#     alt.Y('cnt_region', title='count of regions'),
+#     # color='size:N'
+# )
+# line_chart_by_size3.height=300
+# # line_chart_by_size3.width=200
+# st.altair_chart(line_chart_by_size3)
 
 
 st.write(f"#### Break down by country for {selected_grow_industry}")
@@ -342,12 +372,12 @@ else:
     list_country_tmp.append('missing country data')
     df_country_tmp2 = df_country[df_country.country.isin(list_country_tmp)].copy()
 st.line_chart(data=df_country_tmp2, x="founded", y="cnt_company", color="country", y_label="count of companies")
-st.line_chart(data=df_country_tmp2, x="founded", y="cnt_employee", color="country", y_label="count of employees")
+# st.line_chart(data=df_country_tmp2, x="founded", y="cnt_employee", color="country", y_label="count of employees")
 
 
 
 # linechart of cnt of company in past 20 years and their delta in past 1 year
-st.write("## Industries having positive growth increment from 2022 to 2023 (founded in 2023>2022)")
+st.write("## Industries having more founded companies in 2023 compared to that in 2022")
 list_industry_positive_delta_2023 = list(df_delta[(df_delta.founded == 2023)&(df_delta.delta_cnt_company > 0)&(df_delta.cnt_company > 0)]['industry'].unique())
 df_delta_tmp_2 = df_delta[df_delta.industry.isin(list_industry_positive_delta_2023)].copy()
 st.write(f"There are {len(list_industry_positive_delta_2023)} industries growing faster from 2022 to 2023: {list_industry_positive_delta_2023}")
@@ -367,44 +397,3 @@ feedback = streamlit_feedback(
     optional_text_label="[Optional] Please provide an explanation",
 )
 
-
-# # scatterplot of cnt of company in past 20 years and their delta in past 1 year
-# st.write("## Distribution of industry in count of founded companies in the past 20 years and the ratio of new company in the past 1 year")
-# flag_exclude_unknown = st.checkbox(label="Exclude Unknown Industry Data for Industry Distribution", value=True)
-# st.write("color = industry, size = count of founded companies in the past 3 years")
-# df3 = conn.query("select * from REPORT_COMPANY_CNT_PAST_20_YEAR;", ttl=600)
-# df3.columns = df3.columns.str.lower()
-# if flag_exclude_unknown:
-#     df3_tmp = df3[df3.industry != "unknown"]
-#     st.scatter_chart(data=df3_tmp,  color="industry", x="cnt_company_past_20_year", y="cnt_company_past_1_year", x_label="Founded companies in the past 20 years", y_label="Foundedcompanies in the past 1 year", size="pct_company_past_3_year", height=500, width=500)
-# else:
-#     st.scatter_chart(data=df3,  color="industry", x="cnt_company_past_20_year", y="cnt_company_past_1_year", x_label="Founded companies in the past 20 years", y_label="Foundedcompanies in the past 1 year", size="pct_company_past_3_year", height=500, width=500)
-
-
-
-
-# # df2
-
-# # for row in df2.itertuples():
-# #     st.write(f"{row.NAME} is in {row.COUNTRY} and has size of {row.SIZE}")
-
-
-
-# # if st.button("embed"):
-# #     result = conn.query(text_to_embed)
-# #     result
-
-
-# # radio widget to take inputs from mulitple options
-# genre = st.radio(
-#     "What's your favorite movie genre",
-#     ('Comedy', 'Drama', 'Documentary'))
-
-# if genre == 'Comedy':
-#     st.write('You selected comedy.')
-# else:
-#     st.write("You didn't select comedy.")
-
-# st.write(
-#     "Test again! Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
-# )
